@@ -1,0 +1,29 @@
+version: "3.3"
+services:
+  postgres:
+    image: library/postgres:${KC_POSTGRES_IMAGE_TAG:-14}
+    container_name: ${POSTGRES_CONTAINER_NAME:-postgres}
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - ${KC_POSTGRES_PORT_MAPPING:-5435}:5432
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+  counter:
+    image: counter:0.0.1-SNAPSHOT
+    container_name: counter
+    environment:
+      BPL_DEBUG_ENABLED: true
+      BPL_DEBUG_PORT: 5005
+    ports:
+      - 8080:8080
+      - 5005:5005
+    depends_on:
+      - postgres
+
+
